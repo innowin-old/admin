@@ -1,0 +1,204 @@
+<template>
+  <v-container>
+    <v-card>
+      <v-card-text>
+        <v-flex xs6>
+
+          <v-text-field
+            label='Name'
+            v-model='name'
+            :rules='nameRules'
+            :counter='100'
+            required
+          ></v-text-field>
+
+          <v-text-field
+            label='Link'
+            v-model='link'
+            :rules='linkRules'
+            :counter='100'
+            required
+          ></v-text-field>
+
+          <v-textarea
+            label='Description'
+            v-model='description'
+            :rules='descriptionRules'
+            :counter='300'
+            required
+          ></v-textarea>
+
+          <v-text-field
+            label='Members Count'
+            v-model='membersCount'
+            :rules='membersCountRules'
+            required
+          ></v-text-field>
+
+          <v-checkbox
+            label="Private"
+            v-model='private'
+          ></v-checkbox>
+
+        </v-flex>
+      </v-card-text>
+    </v-card>
+  </v-container>
+</template>
+
+<script>
+  export default {
+    data: () => ({
+      title: 'New Exchange',
+      valid: true,
+      id: null,
+      name: '',
+      nameRules: [
+        (v) => !!v || 'Username is required',
+        (v) => (v && v.length <= 100) || 'Username must be less than 100 characters'
+      ],
+      link: '',
+      linkRules: [
+        (v) => !!v || 'Link is required',
+        (v) => (v && v.length <= 100) || 'Link must be less than 100 characters'
+      ],
+      description: '',
+      descriptionRules: [
+        (v) => !!v || 'Description is required',
+        (v) => (v && v.length <= 300) || 'Description must be less than 300 characters'
+      ],
+      private: null,
+      membersCount: '',
+      membersCountRules: [
+        (v) => !!v || 'Members Count is required'
+      ]
+    }),
+    methods: {
+      submit () {
+        if (this.$refs.form.validate()) {
+          var userData = {
+            username: this.username,
+            first_name: this.firstName,
+            last_name: this.lastName,
+            email: this.email,
+            password: this.password
+          }
+
+          var profileData = {
+            public_email: this.publicEmail,
+            national_code: this.nationalCode,
+            birth_date: this.birthDate,
+            web_site: this.website,
+            phone: this.phone,
+            mobile: this.mobile,
+            fax: this.fax,
+            telegram_account: this.telegramAccount,
+            description: this.description
+          }
+
+          var body, profileBody
+
+          if (this.getParameterByName('id') != null) {
+            body = {
+              token: this.$cookie.get('daneshboom_token'),
+              url: 'http://restful.daneshboom.ir/users/' + this.id + '/',
+              method: 'patch',
+              result: 'submitUserResult',
+              data: userData
+            }
+
+            profileBody = {
+              token: this.$cookie.get('daneshboom_token'),
+              url: 'http://restful.daneshboom.ir/users/profiles/' + this.id + '/',
+              method: 'patch',
+              result: 'submitProfileResult',
+              data: profileData
+            }
+          } else {
+            body = {
+              token: this.$cookie.get('daneshboom_token'),
+              url: 'http://restful.daneshboom.ir/users/',
+              method: 'post',
+              result: 'submitUserResult',
+              data: userData
+            }
+
+            profileBody = {
+              token: this.$cookie.get('daneshboom_token'),
+              url: 'http://restful.daneshboom.ir/users/profiles/',
+              method: 'patch',
+              result: 'submitProfileResult',
+              data: profileData
+            }
+          }
+          console.log('User body', body)
+          console.log('Profile body', profileBody)
+          this.$socket.emit('rest request', body)
+          this.$socket.emit('rest request', profileBody)
+        }
+      },
+      clear () {
+        this.$refs.form.reset()
+      },
+      getParameterByName (name, url) {
+        if (!url) url = window.location.href
+        name = name.replace(/[\]]/g, '\\$&')
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)')
+        var results = regex.exec(url)
+        if (!results) return null
+        if (!results[2]) return ''
+        return decodeURIComponent(results[2].replace(/\+/g, ' '))
+      }
+    },
+    sockets: {
+      newOrganizationResult: function (value) {
+        this.users = value
+      },
+      getUserResult: function (value) {
+        console.log(value)
+        this.username = value.username
+        this.firstName = value.first_name
+        this.lastName = value.last_name
+        this.email = value.email
+      },
+      submitUserResult: function (value) {
+        console.log(value)
+        if ('id' in value) {
+          var textValue
+          if (this.id != null) {
+            textValue = 'Record Updated.'
+          } else {
+            textValue = 'Record Added.'
+          }
+          this.$swal({
+            type: 'success',
+            title: 'Successfully',
+            text: textValue
+          }).then((result) => {
+            this.$router.push('/organization-staffs')
+          })
+        } else {
+          this.$swal({
+            type: 'error',
+            title: 'Oops...',
+            text: value[Object.keys(value)[0]]
+          })
+        }
+      }
+    },
+    mounted: function () {
+      this.$store.commit('setTitle', this.title)
+
+      if (this.getParameterByName('id') != null) {
+        this.id = this.getParameterByName('id')
+        var updateBody = {
+          url: 'http://restful.daneshboom.ir/users/' + this.id + '/?format=json',
+          token: this.$cookie.get('daneshboom_token'),
+          method: 'get',
+          result: 'getUserResult'
+        }
+        this.$socket.emit('rest request', updateBody)
+      }
+    }
+  }
+</script>

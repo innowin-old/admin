@@ -1,0 +1,21 @@
+export const state = () => ({
+  list: []
+})
+
+export const mutations = {
+  get (state, value) {
+    state.list = value
+  },
+  add (state, text) {
+    state.list.push({
+      text: text,
+      done: false
+    })
+  },
+  remove (state, id) {
+    state.list.splice(state.list.indexOf(state.list.find(e => e._id === id)), 1)
+  },
+  toggle (state, todo) {
+    todo.done = !todo.done
+  }
+}
