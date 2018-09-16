@@ -5,7 +5,7 @@
         <div class="buttons">
           <v-btn color="success" dark v-on:click="navigate('Import-Users')">Import</v-btn>
           <v-btn color="pink" dark>Export</v-btn>
-          <v-btn color="cyan" dark v-on:click="navigate('new-user')">New User</v-btn>
+          <v-btn color="cyan" dark v-on:click="navigate('users/form')">New User</v-btn>
         </div>
         <v-spacer></v-spacer>
         <v-text-field

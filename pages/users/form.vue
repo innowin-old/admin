@@ -71,7 +71,8 @@
 </template>
 
 <script>
-    /* eslint-disable indent */
+    /* eslint-disable indent,spaced-comment */
+    import {emailValid} from '../../utils/validation'
 
     export default {
         name: '',
@@ -86,6 +87,7 @@
             ],
             public_email: '',
             publicEmailRules: [
+                (v) => (v === '' || v === undefined || v == null || emailValid(v)) || 'email is not valid',
                 (v) => (v === '' || v === undefined || v == null || (v && v.length <= 100)) || 'email must be less than 100 character'
             ],
             phone: '',
@@ -113,8 +115,8 @@
                         this.$app.service('users').update(this.id, this.model)
                         this.$router.push('/users')
                     } else {
-                        let users = this.$app.service('exchanges')
-                        users.create(this.model())
+                        let users = this.$app.service('users')
+                        users.create(this.model)
                         this.$router.push('/users')
                     }
                 }
