@@ -31,7 +31,7 @@
           <td>{{ props.item.last_name }}</td>
           <td>{{ props.item.public_email }}</td>
           <td>
-            <v-btn flat icon color="orange" class="tools-button" v-on:click="navigate('users/form?id=' + props.item._id)">
+            <v-btn flat icon color="orange" class="tools-button" v-on:click="navigate('/users/form?id=' + props.item._id)">
               <v-icon>edit</v-icon>
             </v-btn>
             <v-btn flat icon color="red" dark class="tools-button" v-on:click="deleteRecord(props.item._id, props.index)">
