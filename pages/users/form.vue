@@ -85,10 +85,10 @@
                                     prepend-icon="event"
                                     readonly
                             ></v-text-field>
-                            <v-date-picker v-model="date" scrollable>
+                            <v-date-picker v-model="model.birth_date" scrollable>
                                 <v-spacer></v-spacer>
                                 <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
-                                <v-btn flat color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
+                                <v-btn flat color="primary" @click="$refs.dialog.save(model.birth_date)">OK</v-btn>
                             </v-date-picker>
                         </v-dialog>
 
