@@ -9,7 +9,7 @@
                     <v-form v-model="valid" ref="form" lazy-validation>
 
                         <v-text-field
-                                label='Username'
+                                label=' نام کاربری '
                                 v-model='model.username'
                                 :rules="usernameRules"
                                 :counter='100'
@@ -17,7 +17,7 @@
                         ></v-text-field>
 
                         <v-text-field
-                                label='Password'
+                                label=' رمز عبور '
                                 v-model='model.password'
                                 :rules="passwordRules"
                                 type="password"
@@ -26,28 +26,152 @@
                         ></v-text-field>
 
                         <v-text-field
-                                label='Public Email'
+                                label=" نام "
+                                v-model="model.first_name"
+                                :counter="100"
+                        ></v-text-field>
+
+                        <v-text-field
+                                label=" نام خانوادگی "
+                                v-model="model.last_name"
+                                :counter="100"
+                        ></v-text-field>
+
+                        <v-text-field
+                                label=" ایمیل "
+                                v-model="model.email"
+                                :counter="100"
+                        ></v-text-field>
+
+                        <v-text-field
+                                label=" آدرس وب سایت "
+                                v-model="model.website"
+                                :counter="100"
+                        ></v-text-field>
+
+                        <v-text-field
+                                label=' ایمیل عمومی '
                                 v-model='model.public_email'
                                 :rules="publicEmailRules"
                                 :counter='100'
                         ></v-text-field>
 
                         <v-text-field
-                                label='Fax'
+                                label=" کد ملی "
+                                v-model="model.national_code"
+                                :counter="100"
+                        ></v-text-field>
+
+                        <v-text-field
+                                label=" عکس پروفایل "
+                                v-model="model.profile_media"
+                                :rules="relatedMediaRules"
+                                :counter="100"
+                        ></v-text-field>
+
+                        <v-dialog
+                                ref="dialog"
+                                v-model="modal"
+                                :return-value.sync="date"
+                                persistent
+                                lazy
+                                full-width
+                                width="290px"
+                        >
+                            <v-text-field
+                                    slot="activator"
+                                    v-model="model.birth_date"
+                                    label=" تاریخ تولد "
+                                    prepend-icon="event"
+                                    readonly
+                            ></v-text-field>
+                            <v-date-picker v-model="date" scrollable>
+                                <v-spacer></v-spacer>
+                                <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
+                                <v-btn flat color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
+                            </v-date-picker>
+                        </v-dialog>
+
+
+                        <v-text-field
+                                label=" اکانت تلگرام "
+                                v-model="model.telegram_account"
+                                :counter="100"
+                        ></v-text-field>
+
+                        <v-text-field
+                                label=" معرفی "
+                                v-model="model.description"
+                                :counter="100"
+                        ></v-text-field>
+
+                        <v-text-field
+                                label=" جنسیت "
+                                v-model="model.gender"
+                                :counter="100"
+                        ></v-text-field>
+
+                        <v-text-field
+                                label=" آدرس صفحه ی گوگل پلاس "
+                                v-model="model.google_plus_address"
+                                :counter="100"
+                        ></v-text-field>
+
+                        <v-text-field
+                                label=" هدلاین لینکاین "
+                                v-model="model.linkedin_headline"
+                                :counter="100"
+                        ></v-text-field>
+
+                        <v-text-field
+                                label=" پوزیشن های لینکداین "
+                                v-model="model.linkedin_positions"
+                                :counter="100"
+                        ></v-text-field>
+
+                        <v-text-field
+                                label=" آدرس "
+                                v-model="model.address"
+                                :counter="100"
+                        ></v-text-field>
+
+                        <v-text-field
+                                label=" کشور "
+                                v-model="model.related_country"
+                                :rules="relatedCountryRules"
+                                :counter="100"
+                        ></v-text-field>
+
+                        <v-text-field
+                                label=" استان "
+                                v-model="model.related_province"
+                                :rules="relatedProvinceRules"
+                                :counter="100"
+                        ></v-text-field>
+
+                        <v-text-field
+                                label=" شهر "
+                                v-model="model.related_town"
+                                :rules="relatedTownRules"
+                                :counter="100"
+                        ></v-text-field>
+
+                        <v-text-field
+                                label=' فکس '
                                 v-model='model.fax'
                                 :rules="faxRules"
                                 :counter='100'
                         ></v-text-field>
 
                         <v-text-field
-                                label='Phone'
+                                label=' تلفن ثابت '
                                 v-model='model.phone'
                                 :rules="phoneRules"
                                 :counter='100'
                         ></v-text-field>
 
                         <v-text-field
-                                label='Mobile'
+                                label=' تلفن همراه '
                                 v-model='model.mobile'
                                 :rules="mobileRules"
                                 :counter='100'
@@ -71,8 +195,8 @@
 </template>
 
 <script>
-    /* eslint-disable indent,spaced-comment */
-    import {emailValid} from '../../utils/validation'
+    /* eslint-disable indent,spaced-comment,no-unused-vars */
+    import {isEmailValid, isMobileValid, isPhoneValid, isNumerice} from '../../utils/validation'
 
     export default {
         name: '',
@@ -80,6 +204,9 @@
         data: () => ({
             valid: true,
             id: null,
+            date: null,
+            menu: false,
+            modal: false,
             username: '',
             usernameRules: [
                 (v) => !!v || 'username is required',
@@ -87,11 +214,12 @@
             ],
             public_email: '',
             publicEmailRules: [
-                (v) => (v === '' || v === undefined || v == null || emailValid(v)) || 'email is not valid',
+                (v) => (v === '' || v === undefined || v == null || isEmailValid(v)) || 'email is not valid',
                 (v) => (v === '' || v === undefined || v == null || (v && v.length <= 100)) || 'email must be less than 100 character'
             ],
             phone: '',
             phoneRules: [
+                (v) => (v === '' || v === undefined || v == null || isPhoneValid(v)) || 'phone is not valid',
                 (v) => (v === '' || v === undefined || v == null || (v && v.length <= 100)) || 'phone must be less than 100 character'
             ],
             fax: '',
@@ -100,13 +228,50 @@
             ],
             mobile: '',
             mobileRules: [
+                (v) => (v === '' || v === undefined || v == null || isMobileValid(v)) || 'mobile number is not valid',
                 (v) => (v === '' || v === undefined || v == null || (v && v.length <= 100)) || 'mobile must be less than 100 character'
             ],
             password: '',
             passwordRules: [
                 (v) => !!v || 'password is required',
                 (v) => (v && v.length <= 100) || 'password must be less than 100 character'
-            ]
+            ],
+            first_name: '',
+            last_name: '',
+            email: '',
+            website: '',
+            national_code: '',
+            profile_media: '',
+            birth_date: '',
+            telegram_account: '',
+            description: '',
+            gender: '',
+            is_plus_user: '',
+            is_user_organization: '',
+            google_plus_address: '',
+            social_image_url: '',
+            linkedin_headline: '',
+            linkedin_positions: '',
+            yahoo_contacts: '',
+            profile_strength: '',
+            address: '',
+            related_media: '',
+            relatedMediaRules: [
+                (v) => (v === '' || v === undefined || v == null || isNumerice(v)) || 'media must be numeric'
+            ],
+            related_country: '',
+            relatedCountryRules: [
+                (v) => (v === '' || v === undefined || v == null || isNumerice(v)) || 'country must be numeric'
+            ],
+            related_province: '',
+            relatedProvinceRules: [
+                (v) => (v === '' || v === undefined || v == null || isNumerice(v)) || 'province must be numeric'
+            ],
+            related_town: '',
+            relatedTownRules: [
+                (v) => (v === '' || v === undefined || v == null || isNumerice(v)) || 'town must be numeric'
+            ],
+            banner: ''
         }),
         methods: {
             submit: function () {
