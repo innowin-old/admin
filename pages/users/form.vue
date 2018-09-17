@@ -214,12 +214,12 @@
             ],
             public_email: '',
             publicEmailRules: [
-                (v) => (v === '' || v === undefined || v == null || isEmailValid(v)) || 'email is not valid',
+                (v) => (isEmailValid(v)) || 'email is not valid',
                 (v) => (v === '' || v === undefined || v == null || (v && v.length <= 100)) || 'email must be less than 100 character'
             ],
             phone: '',
             phoneRules: [
-                (v) => (v === '' || v === undefined || v == null || isPhoneValid(v)) || 'phone is not valid',
+                (v) => (isPhoneValid(v)) || 'phone is not valid',
                 (v) => (v === '' || v === undefined || v == null || (v && v.length <= 100)) || 'phone must be less than 100 character'
             ],
             fax: '',
@@ -228,7 +228,7 @@
             ],
             mobile: '',
             mobileRules: [
-                (v) => (v === '' || v === undefined || v == null || isMobileValid(v)) || 'mobile number is not valid',
+                (v) => (isMobileValid(v)) || 'mobile number is not valid',
                 (v) => (v === '' || v === undefined || v == null || (v && v.length <= 100)) || 'mobile must be less than 100 character'
             ],
             password: '',
