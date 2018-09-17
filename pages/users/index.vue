@@ -29,7 +29,7 @@
           <td>{{ props.item.username }}</td>
           <td>{{ props.item.first_name }}</td>
           <td>{{ props.item.last_name }}</td>
-          <td>{{ props.item.public_email }}</td>
+          <td>{{ props.item.email }}</td>
           <td>
             <v-btn flat icon color="orange" class="tools-button" v-on:click="navigate('/users/form?id=' + props.item._id)">
               <v-icon>edit</v-icon>
