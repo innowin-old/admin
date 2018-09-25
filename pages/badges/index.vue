@@ -28,7 +28,7 @@
           <td>{{ props.item._id }}</td>
           <td>{{ props.item.badge_related_badge_category }}</td>
           <td>{{ props.item.badge_related_parent }}</td>
-          <td>{{ props.item.badge_active }}</td>
+          <td>{{ props.item.badge_related_parent_service }}</td>
           <td>
             <v-btn flat icon color="orange" class="tools-button" v-on:click="navigate('/badges/form?id=' + props.item._id)">
               <v-icon>edit</v-icon>
