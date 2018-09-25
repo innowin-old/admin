@@ -21,12 +21,12 @@
               required
             ></v-text-field>
 
-            <v-textarea
+            <v-text-field
               label='Public Email'
               v-model='model.public_email'
               :rules='publicEmailRules'
               :counter='300'
-            ></v-textarea>
+            ></v-text-field>
 
             <v-text-field
               label='Nike Name'
@@ -46,6 +46,17 @@
               v-model='model.national_code'
               :rules='nationalCodeRules'
             ></v-text-field>
+
+
+            <v-autocomplete
+                    v-model="model.country"
+                    :items="research_user_states"
+                    :readonly="!isEditing"
+                    :rules="researchUserRules"
+                    :label=" ' انتخاب کاربر ' "
+                    persistent-hint
+            >
+            </v-autocomplete>
 
             <v-text-field
               label='Registration Ads Url'
@@ -131,63 +142,79 @@
 </template>
 
 <script>
-  export default {
-    data: () => ({
-      title: 'New Organization',
-      valid: true,
-      id: null,
-      usernameRules: [
-        (v) => !!v || 'Username is required',
-        (v) => (v && v.length <= 100) || 'Username must be less than 100 characters'
-      ],
-      emailRules: [],
-      publicEmailRules: [],
-      nikeNameRules: [],
-      officialNameRules: [],
-      nationalCodeRules: [],
-      registrationAdsUrlRules: [],
-      registrarOrganizationRules: [],
-      countryRules: [],
-      provinceRules: [],
-      cityRules: [],
-      addressRules: [],
-      phoneRules: [],
-      websiteRules: [],
-      establishedYearRules: [],
-      ownershipTypeRules: [],
-      businessTypeRules: [],
-      biographyRules: [],
-      descriptionRules: [],
-      correspondenceLanguageRules: [],
-      socialNetworkRules: [],
-      staffCountRules: [],
-      ownerRules: [],
-      organizationLogoRules: [],
-      organizationBannerRules: [],
-      received: false
-    }),
-    methods: {
-      submit () {
-        if (this.$refs.form.validate()) {
-          var instance = this.model
+    /* eslint-disable indent,no-trailing-spaces */
 
-          try {
-            instance.owner = this.$store.state.identities.list.find(a => a.name === this.model.owner)._id
-          } catch (e) {
-            instance.owner = null
-          }
+    import {isEmailValid} from '../../utils/validation'
 
-          var organizations = this.$app.service('organizations')
+    export default {
+        data: () => ({
+            title: 'New Organization',
+            valid: true,
+            id: null,
+            country_states: [],
+            province_states: [],
+            city_states: [],
+            usernameRules: [
+                (v) => !!v || 'Username is required',
+                (v) => (v && v.length <= 100) || 'Username must be less than 100 characters'
+            ],
+            emailRules: [
+                (v) => (isEmailValid(v)) || 'Email is not valid'
+            ],
+            publicEmailRules: [
+                (v) => (isEmailValid(v)) || 'Email is not valid'
+            ],
+            nikeNameRules: [
+                (v) => (v && v.length <= 100) || 'Nike Name must be less than 100 character'
+            ],
+            officialNameRules: [
+                (v) => !!v || 'Official name is required',
+                (v) => (v && v.length <= 100) || 'Official Name must be less than 100 character'
+            ],
+            nationalCodeRules: [],
+            registrationAdsUrlRules: [],
+            registrarOrganizationRules: [],
+            countryRules: [],
+            provinceRules: [],
+            cityRules: [],
+            addressRules: [],
+            phoneRules: [],
+            websiteRules: [],
+            establishedYearRules: [],
+            ownershipTypeRules: [],
+            businessTypeRules: [],
+            biographyRules: [],
+            descriptionRules: [],
+            correspondenceLanguageRules: [],
+            socialNetworkRules: [],
+            staffCountRules: [],
+            ownerRules: [],
+            organizationLogoRules: [],
+            organizationBannerRules: [],
+            received: false
+        }),
+        methods: {
+              submit () {
+                  if (this.$refs.form.validate()) {
+                      var instance = this.model
 
-          if (this.getParameterByName('id') != null) {
-            this.$app.service('organizations').update(this.id, instance)
-            this.$router.push('/organizations')
-          } else {
-            organizations.create(instance)
-            this.$router.push('/organizations')
-          }
-        }
-      },
+                      try {
+                          instance.owner = this.$store.state.identities.list.find(a => a.name === this.model.owner)._id
+                      } catch (e) {
+                          instance.owner = null
+                      }
+
+                      var organizations = this.$app.service('organizations')
+
+                      if (this.getParameterByName('id') != null) {
+                          this.$app.service('organizations').update(this.id, instance)
+                          this.$router.push('/organizations')
+                      } else {
+                          organizations.create(instance)
+                          this.$router.push('/organizations')
+                      }
+                  }
+              },
       clear () {
         this.$refs.form.reset()
       },
@@ -225,10 +252,14 @@
       },
       done () {
         return this.$store.state.organizations.done
+      },
+      setCountryStates () {
+          console.log('salaaaaaaaaaaaaam')
       }
     },
     mounted: function () {
       this.$store.commit('setTitle', this.title)
+      // this.setCountryStates()
     }
   }
 </script>
