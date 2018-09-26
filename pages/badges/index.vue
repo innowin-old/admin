@@ -26,7 +26,7 @@
       >
         <template slot="items" slot-scope="props">
           <td>{{ props.item._id }}</td>
-          <td>{{ props.item.badge_related_badge_category }}</td>
+          <td>{{ props.item.badge_related_badge_category_name }}</td>
           <td>{{ props.item.badge_related_parent }}</td>
           <td>{{ props.item.badge_active }}</td>
           <td>
@@ -67,7 +67,8 @@
         dialog: false,
         notifications: false,
         sound: true,
-        widgets: false
+        widgets: false,
+        badge_states: []
       }
     },
     computed: {
@@ -80,7 +81,11 @@
       },
       items: function () {
         if (typeof this.$store !== 'undefined') {
-          return this.$store.state.badges.list
+          this.$data.badge_states = this.$store.state.badges.list
+          this.$data.badge_states.forEach(badge => {
+            badge.badge_related_badge_category_name = this.getBadgeCategoryName(badge.badge_related_badge_category)
+          })
+          return this.$data.badge_states
         } else {
           return []
         }
@@ -119,6 +124,9 @@
             )
           }
         })
+      },
+      getBadgeCategoryName: function (id) {
+        return this.$store.state['badge-categories'].list.find(element => element._id === id).text
       }
     }
   }
