@@ -50,10 +50,10 @@
 
             <v-autocomplete
                     v-model="model.country"
-                    :items="research_user_states"
+                    :items="country_states"
                     :readonly="!isEditing"
-                    :rules="researchUserRules"
-                    :label=" ' انتخاب کاربر ' "
+                    :rules="countryRules"
+                    :label=" ' Choose Country ' "
                     persistent-hint
             >
             </v-autocomplete>
@@ -151,6 +151,7 @@
             title: 'New Organization',
             valid: true,
             id: null,
+            isEditing: true,
             country_states: [],
             province_states: [],
             city_states: [],
@@ -194,72 +195,73 @@
             received: false
         }),
         methods: {
-              submit () {
-                  if (this.$refs.form.validate()) {
-                      var instance = this.model
+            submit () {
+                if (this.$refs.form.validate()) {
+                    var instance = this.model
 
-                      try {
-                          instance.owner = this.$store.state.identities.list.find(a => a.name === this.model.owner)._id
-                      } catch (e) {
-                          instance.owner = null
-                      }
+                    try {
+                        instance.owner = this.$store.state.identities.list.find(a => a.name === this.model.owner)._id
+                    } catch (e) {
+                        instance.owner = null
+                    }
 
-                      var organizations = this.$app.service('organizations')
+                    var organizations = this.$app.service('organizations')
 
-                      if (this.getParameterByName('id') != null) {
-                          this.$app.service('organizations').update(this.id, instance)
-                          this.$router.push('/organizations')
-                      } else {
-                          organizations.create(instance)
-                          this.$router.push('/organizations')
-                      }
-                  }
-              },
-      clear () {
-        this.$refs.form.reset()
-      },
-      getParameterByName (name, url) {
-        if (!url) url = window.location.href
-        name = name.replace(/[\]]/g, '\\$&')
-        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)')
-        var results = regex.exec(url)
-        if (!results) return null
-        if (!results[2]) return ''
-        return decodeURIComponent(results[2].replace(/\+/g, ' '))
-      }
+                    if (this.getParameterByName('id') != null) {
+                        this.$app.service('organizations').update(this.id, instance)
+                        this.$router.push('/organizations')
+                    } else {
+                        organizations.create(instance)
+                        this.$router.push('/organizations')
+                    }
+                }
+            },
+            clear () {
+                this.$refs.form.reset()
+            },
+            getParameterByName (name, url) {
+                if (!url) url = window.location.href
+                name = name.replace(/[\]]/g, '\\$&')
+                var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)')
+                var results = regex.exec(url)
+                if (!results) return null
+                if (!results[2]) return ''
+                return decodeURIComponent(results[2].replace(/\+/g, ' '))
+            },
+            setCountryStates: function () {
+                console.log('salaaaaaaaaaaaaam')
+                this.$data.country_states = this.$store.state.countries.list.map(a => a.name)
+            }
     },
     computed: {
-      model () {
-        if (this.getParameterByName('id') != null && this.done) {
-          this.id = this.getParameterByName('id')
-          var instance = this.$store.state.organizations.list.find(instance => instance._id === this.id)
+        model () {
+            if (this.getParameterByName('id') != null && this.done) {
+                this.id = this.getParameterByName('id')
+                var instance = this.$store.state.organizations.list.find(instance => instance._id === this.id)
 
-          try {
-            instance.owner = this.$store.state.identities.list.find(a => a._id === instance.owner).name
-          } catch (e) {}
+                try {
+                instance.owner = this.$store.state.identities.list.find(a => a._id === instance.owner).name
+                } catch (e) {}
 
-          return instance
-        } else {
-          return {}
+                return instance
+            } else {
+                return {}
+            }
+        },
+        ownersItems () {
+            if (this.$store.state.identities.done) {
+                return this.$store.state.identities.list.map(a => a.name)
+            } else {
+                return []
+            }
+        },
+        done () {
+            return this.$store.state.organizations.done
         }
-      },
-      ownersItems () {
-        if (this.$store.state.identities.done) {
-          return this.$store.state.identities.list.map(a => a.name)
-        } else {
-          return []
-        }
-      },
-      done () {
-        return this.$store.state.organizations.done
-      },
-      setCountryStates () {
-          console.log('salaaaaaaaaaaaaam')
-      }
     },
     mounted: function () {
       this.$store.commit('setTitle', this.title)
-      // this.setCountryStates()
+      this.setCountryStates()
     }
   }
 </script>
