@@ -98,7 +98,9 @@
 </template>
 
 <script>
-  export default {
+    /* eslint-disable indent */
+
+    export default {
     data () {
       return {
         clipped: false,
@@ -155,6 +157,11 @@
               { title: 'Pictures', to: '/products/pictures' },
               { title: 'Prices', to: '/products/prices' }
             ]
+          },
+          {
+              icon: 'call_split',
+              title: 'GIS',
+              to: '/gis/countries'
           }
         ],
         miniVariant: false,

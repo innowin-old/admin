@@ -300,6 +300,22 @@
               this.$store.commit('comments/get', response.data)
             })
           })
+
+          // Countries
+          this.$app.service('countries').find({}).then(response => {
+            this.$store.commit('countries/get', response.data)
+            this.$store.commit('countries/done')
+          })
+
+          this.$app.service('countries').on('created', response => {
+            this.$store.commit('countries/add', response)
+          })
+
+          this.$app.service('countries').on('updated', exchange => {
+            this.$app.service('countries').find({}).then(response => {
+              this.$store.commit('countries/get', response.data)
+            })
+          })
         }).catch(() => {
           this.$store.commit('setAuthenticated', false)
         })
