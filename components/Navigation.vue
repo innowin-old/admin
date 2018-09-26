@@ -161,7 +161,12 @@
           {
               icon: 'call_split',
               title: 'GIS',
-              to: '/gis/countries'
+              to: '/gis/countries',
+              items: [
+                  { title: 'Countries', to: '/gis/countries' },
+                  { title: 'Provinces', to: '/gis/provinces' },
+                  { title: 'Towns', to: '/gis/towns' }
+              ]
           }
         ],
         miniVariant: false,

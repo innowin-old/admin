@@ -1,15 +1,12 @@
 <template>
-
+    <h1> Towns </h1>
 </template>
 
 <script>
     /* eslint-disable indent */
 
     export default {
-        name: 'index',
-        mounted: function () {
-            this.$router.push('/gis/countries')
-        }
+        name: 'index'
     }
 </script>
 
