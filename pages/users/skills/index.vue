@@ -28,7 +28,7 @@
           <td>{{ props.item._id }}</td>
           <td>{{ props.item.title }}</td>
           <td>{{ props.item.description }}</td>
-          <td>{{ props.item.skill_user }}</td>
+          <td>{{ props.item.skill_user_username }}</td>
           <td>
             <v-btn flat icon color="orange" class="tools-button" v-on:click="navigate('/users/skills/form?id=' + props.item._id)">
               <v-icon>edit</v-icon>
@@ -66,7 +66,8 @@
         dialog: false,
         notifications: false,
         sound: true,
-        widgets: false
+        widgets: false,
+        skill_states: []
       }
     },
     computed: {
@@ -79,7 +80,11 @@
       },
       items: function () {
         if (typeof this.$store !== 'undefined') {
-          return this.$store.state.skills.list
+          this.$data.skill_states = this.$store.state.skills.list
+          this.$data.skill_states.forEach(skill => {
+            skill.skill_user_username = this.getUsername(skill.skill_user)
+          })
+          return this.$data.skill_states
         } else {
           return []
         }
@@ -91,6 +96,9 @@
     methods: {
       navigate: function (path) {
         this.$router.push(path)
+      },
+      getUsername: function (id) {
+        return this.$store.state.users.list.find(element => element._id === id).username
       },
       deleteRecord: function (id, index) {
         this.$swal({
