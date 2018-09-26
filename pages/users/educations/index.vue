@@ -18,7 +18,7 @@
       </v-card-title>
       <v-data-table
         v-bind:headers="headers"
-        v-bind:items="items"
+        v-bind:items="education_states"
         v-bind:search="search"
         v-bind:pagination.sync="pagination"
         hide-actions
@@ -29,7 +29,7 @@
           <td>{{ props.item.grade }}</td>
           <td>{{ props.item.university }}</td>
           <td>{{ props.item.field_of_study }}</td>
-          <td>{{ props.item.education_user }}</td>
+          <td>{{ props.item.education_user_username }}</td>
           <td>
             <v-btn flat icon color="orange" class="tools-button" v-on:click="navigate('/users/educations/form?id=' + props.item._id)">
               <v-icon>edit</v-icon>
@@ -62,13 +62,14 @@
           { text: 'Grade', value: 'grade', align: 'left' },
           { text: 'University', value: 'university', align: 'left' },
           { text: 'Field Of Study', value: 'field_of_study', align: 'left' },
-          { text: 'Education User', value: 'education_user', align: 'left' },
+          { text: 'Education User', value: 'education_user_username', align: 'left' },
           { value: '' }
         ],
         dialog: false,
         notifications: false,
         sound: true,
-        widgets: false
+        widgets: false,
+        education_states: []
       }
     },
     computed: {
@@ -77,18 +78,8 @@
           this.pagination.totalItems == null
         ) return 0
 
-        return Math.ceil(this.items.length / this.pagination.rowsPerPage)
-      },
-      items: function () {
-        if (typeof this.$store !== 'undefined') {
-          return this.$store.state.educations.list
-        } else {
-          return []
-        }
+        return Math.ceil(this.education_states.length / this.pagination.rowsPerPage)
       }
-    },
-    mounted: function () {
-      this.$store.commit('setTitle', this.title)
     },
     methods: {
       navigate: function (path) {
@@ -107,7 +98,6 @@
         }).then((result) => {
           if (result.value) {
             this.$store.commit('educations/remove', id)
-            console.log(this.items[index])
             this.$swal(
               'خذف شد!',
               'رکورد مورد نظر شما با موفقیت حذف شد.',
@@ -115,7 +105,20 @@
             )
           }
         })
+      },
+      getUsername: function (id) {
+        return this.$store.state.users.list.find(element => element._id === id).username
+      },
+      setEducations: function () {
+        this.$data.education_states = this.$store.state.educations.list
+        this.$data.education_states.forEach(education => {
+          education.education_user_username = this.getUsername(education.education_user)
+        })
       }
+    },
+    mounted: function () {
+      this.$store.commit('setTitle', this.title)
+      this.setEducations()
     }
   }
 </script>
