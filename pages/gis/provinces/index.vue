@@ -29,7 +29,7 @@
                     <td>{{ props.item._id }}</td>
                     <td>{{ props.item.name }}</td>
                     <td>{{ props.item.code }}</td>
-                    <td> {{props.item.province_related_country}} </td>
+                    <td> {{props.item.province_related_country_name}} </td>
                     <td>
                         <v-btn flat icon color="orange" class="tools-button" v-on:click="navigate('/gis/provinces/form?id=' + props.item._id)">
                             <v-icon>edit</v-icon>
@@ -64,7 +64,7 @@
                     { text: 'ID', value: '_id', align: 'left' },
                     { text: 'Name', value: 'name', align: 'left' },
                     { text: 'Code', value: 'code', align: 'left' },
-                    { text: 'Country', value: 'province_related_country', align: 'left' },
+                    { text: 'Country', value: 'province_related_country_name', align: 'left' },
                     { value: '' }
                 ],
                 dialog: false,
@@ -107,7 +107,7 @@
             setProvinces: function () {
                 this.$data.province_states = this.$store.state.provinces.list
                 this.$data.province_states.forEach(province => {
-                    province.province_related_country = this.getCountryName(province.province_related_country)
+                    province.province_related_country_name = this.getCountryName(province.province_related_country)
                 })
             }
         },
