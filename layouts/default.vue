@@ -316,6 +316,21 @@
               this.$store.commit('countries/get', response.data)
             })
           })
+          // Provinces
+          this.$app.service('provinces').find({}).then(response => {
+            this.$store.commit('provinces/get', response.data)
+            this.$store.commit('provinces/done')
+          })
+
+          this.$app.service('provinces').on('created', response => {
+            this.$store.commit('provinces/add', response)
+          })
+
+          this.$app.service('provinces').on('updated', exchange => {
+            this.$app.service('provinces').find({}).then(response => {
+              this.$store.commit('provinces/get', response.data)
+            })
+          })
         }).catch(() => {
           this.$store.commit('setAuthenticated', false)
         })
