@@ -84,7 +84,7 @@
 </template>
 
 <script>
-    /* eslint-disable indent,camelcase */
+    /* eslint-disable indent,camelcase,no-unused-vars */
     import XLSX from 'xlsx'
 
     export default {
@@ -125,7 +125,7 @@
                         // Here is your object
                         var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName])
                         var json_object = JSON.stringify(XL_row_object)
-                        console.log(json_object)
+                        // console.log(json_object)
                         vm.sheets.push({
                             name: sheetName,
                             data: JSON.parse(json_object),
@@ -137,16 +137,27 @@
             },
             uploadOrganizations: function (sheet) {
                 this.loading = true
-                var body = {
+                /* var body = {
                     url: 'http://restful.daneshboom.ir/organizations/import_organizations/',
                     method: 'post',
                     result: 'uploadOrganizationsResult',
                     data: {
                         records: this.sheets[sheet].jsonString
                     }
-                }
-                console.log(body)
+                } */
+                console.log(this.sheets[sheet].jsonString)
                 /* this.$socket.emit('rest request', body) */
+                const country = this.$store.state.countries.list.find(instance => instance.name === 'ایران')
+                if (country === undefined) {
+                    const country = this.$app.service('countries').create({ name: 'ایران' })
+                }
+                const records = this.sheets[sheet].jsonString
+                records.forEach(record => {
+                    let province = this.$store.state.provinces.list.find(instance => instance.name === record.ostn_name)
+                    if (province === undefined) {
+                        let province = this.$app.service('provinces').create({ name: record.ostn_name, province_related_country: country._id })
+                    }
+                })
             },
             trigger: function () {
                 this.$refs.avatar.click()
