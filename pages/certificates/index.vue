@@ -27,7 +27,7 @@
         <template slot="items" slot-scope="props">
           <td>{{ props.item._id }}</td>
           <td>{{ props.item.title }}</td>
-          <td>{{ props.item.certificate_user }}</td>
+          <td>{{ props.item.certificate_user_username }}</td>
           <td>{{ props.item.certificate_organization }}</td>
           <td>{{ props.item.picture_media }}</td>
           <td>
@@ -60,7 +60,7 @@
         headers: [
           { text: 'ID', value: '_id', align: 'left' },
           { text: 'Title', value: 'title', align: 'left' },
-          { text: 'Certificate User', value: 'certificate_user', align: 'left' },
+          { text: 'Certificate User', value: 'certificate_user_username', align: 'left' },
           { text: 'Certificate Organization', value: 'certificate_organization', align: 'left' },
           { text: 'Picture Media', value: 'picture_media', align: 'left' },
           { value: '' }
@@ -81,6 +81,12 @@
       },
       items: function () {
         if (typeof this.$store !== 'undefined') {
+          const certificates = this.$store.state.certificates.list
+          certificates.forEach(certificate => {
+            if (certificate.certificate_user !== undefined) {
+              certificate.certificate_user_username = this.getUsername(certificate.certificate_user)
+            }
+          })
           return this.$store.state.certificates.list
         } else {
           return []
@@ -120,6 +126,9 @@
             )
           }
         })
+      },
+      getUsername: function (id) {
+        return this.$store.state.users.list.find(instance => instance._id === id).username
       }
     }
   }
