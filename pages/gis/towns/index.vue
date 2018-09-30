@@ -103,7 +103,12 @@
                 })
             },
             getTownName: function (id) {
-                return this.$store.state.provinces.list.find(instance => instance._id === id).name
+                const province = this.$store.state.provinces.list.find(instance => instance._id === id)
+                if (province !== undefined) {
+                    return province.name
+                } else {
+                    return ''
+                }
             },
             setTowns: function () {
                 this.$data.town_states = this.$store.state.towns.list
