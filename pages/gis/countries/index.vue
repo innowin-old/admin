@@ -4,7 +4,7 @@
         <v-container>
             <v-card-title>
                 <div class="buttons">
-                    <v-btn color="success" dark v-on:click="navigate('Import-Countries')">Import</v-btn>
+                    <v-btn color="success" dark v-on:click="navigate('/gis/import-gis')">Import</v-btn>
                     <v-btn color="pink" dark>Export</v-btn>
                     <v-btn color="cyan" dark v-on:click="navigate('/gis/countries/form')">New Country</v-btn>
                 </div>
