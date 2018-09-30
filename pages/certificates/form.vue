@@ -6,7 +6,7 @@
           <v-form v-model="valid" ref="form" lazy-validation>
 
             <v-text-field
-              label='Title'
+              label='عنوان'
               v-model='model.title'
               :rules='titleRules'
               :counter='100'
@@ -14,7 +14,7 @@
             ></v-text-field>
 
             <v-select
-              label='Certificate User'
+              label='کاربر'
               v-model='model.certificate_user'
               :rules='certificateUserRules'
               :items="usersItems"
@@ -22,7 +22,7 @@
             ></v-select>
 
             <v-select
-              label='Certificate Organization'
+              label='شرکت'
               v-model='model.certificate_organization'
               :rules='certificateOrganizationRules'
               :items="organizationsItems"
@@ -30,7 +30,7 @@
             ></v-select>
 
             <v-select
-              label='Picture Media'
+              label='عکس'
               v-model='model.picture_media'
               :rules='pictureMediaRules'
               :items="pictureMediaItems"
