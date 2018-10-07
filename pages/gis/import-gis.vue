@@ -57,6 +57,14 @@
                                     <v-btn flat>Records: {{sheet.size}}</v-btn>
                                     <v-btn flat color="primary" v-on:click="uploadOrganizations(index)" :loading="loading">Send</v-btn>
                                 </v-toolbar-items>
+                                <v-progress-circular
+                                        :rotate="180"
+                                        :size="100"
+                                        :width="15"
+                                        :value="value"
+                                        color="blue"
+                                >
+                                </v-progress-circular>
                             </v-toolbar>
                         </v-container>
                     </v-card>
@@ -102,10 +110,19 @@
                     },
                     { text: 'Status', value: 'status', align: 'left' }
                 ],
-                text: ''
+                text: '',
+                value: 0
             }
         },
         methods: {
+            sleep: function (milliseconds) {
+                var start = new Date().getTime()
+                for (var i = 0; i < 1e7; i++) {
+                    if ((new Date().getTime() - start) > milliseconds) {
+                        break
+                    }
+                }
+            },
             upload: function (e) {
                 // e.preventDefault();
                 // var file = document.getElementById('avatar').files[0];
@@ -136,43 +153,105 @@
                 }
             },
             uploadOrganizations: function (sheet) {
-                this.loading = true
-                /* var body = {
-                    url: 'http://restful.daneshboom.ir/organizations/import_organizations/',
-                    method: 'post',
-                    result: 'uploadOrganizationsResult',
-                    data: {
-                        records: this.sheets[sheet].jsonString
-                    }
-                } */
-                console.log(this.sheets[sheet].jsonString)
-                /* this.$socket.emit('rest request', body) */
+                this.showLoading()
                 const country = this.$store.state.countries.list.find(instance => instance.name === 'ایران')
                 if (country === undefined) {
                     const country = this.$app.service('countries').create({ name: 'ایران' })
                 }
-                const records = this.sheets[sheet].jsonString
-                records.forEach(record => {
-                    let province = this.$store.state.provinces.list.find(instance => instance.name === record.ostn_name)
-                    if (province === undefined) {
-                        let province = this.$app.service('provinces').create({ name: record.ostn_name, province_related_country: country._id })
+                const records = JSON.parse(this.sheets[sheet].jsonString)
+                const len = records.length
+                const step = 100 / records.length
+                const provinces = []
+                const stored_provinces = this.$store.state.provinces.list
+                const stored_provinces_length = this.$store.state.provinces.list.length
+                stored_provinces.forEach((province_record, province_index) => {
+                    provinces.push(province_record.name)
+                    if ((province_index + 1) === stored_provinces_length) {
+                        console.log(provinces)
+                        console.log('man shoro kardam')
+                        records.forEach((record, index) => {
+                            console.log(stored_provinces.includes(record.ostn_name))
+                            if (provinces.includes(record.ostn_name)) {
+                                console.log('salaaaam')
+                            } else {
+                                this.$app.service('provinces').create({ name: record.ostn_name, province_related_country: country._id })
+                                console.log(record.ostn_name + 'not found')
+                                provinces.push(record.ostn_name)
+                                this.sleep(3000)
+                            }
+                            if ((index + 1) === len) {
+                                const towns = []
+                                const stored_towns = this.$store.state.towns.list
+                                const stored_towns_length = this.$store.state.towns.list.length
+                                stored_towns.forEach((town_record, town_index) => {
+                                    towns.push(town_record.name)
+                                    if ((town_index + 1) === stored_towns_length) {
+                                        console.log('man town ha ro shoro kardam')
+                                        records.forEach((record, index) => {
+                                            if (towns.includes(record.city_name)) {
+                                                console.log('town found')
+                                            } else {
+                                                this.$app.service('towns').create({ name: record.city_name, town_related_province: this.getProvinceId(record.ostn_name) })
+                                                towns.push(record.city_name)
+                                                this.sleep(10000)
+                                                console.log(record.city_name + ' added ')
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                        })
                     }
                 })
+                /* records.forEach((record, index) => {
+                    let province = this.$store.state.provinces.list.find(instance => instance.name === record.ostn_name)
+                    if (province === undefined) {
+                        // console.log(record.ostn_name + ' : ostn is created')
+                        let promise = new Promise(function (resolve, reject) {
+                            this.$app.service('provinces').create({ name: record.ostn_name, province_related_country: country._id })
+                            resolve('Success!')
+                        })
+                        promise.then(function (value) {
+                            let province = this.$store.state.provinces.list.find(instance => instance.name === record.ostn_name)
+                            // expected output: "Success!"
+                        })
+                        console.log(record.ostn_name + ' -> added')
+                        this.sleep(3000)
+                    }
+                    if ((index + 1) === len) {
+                        records.forEach(record => {
+                            let town = this.$store.state.towns.list.find(instance => instance.name === record.city_name)
+                            if (town === undefined) {
+                                // console.log(record.city_name + ' : city is created')
+                                this.$app.service('towns').create({ name: record.city_name, town_related_province: province._id })
+                                console.log(record.city_name + ' -> added')
+                                this.sleep(3000)
+                            }
+                            this.value = this.value + step
+                        })
+                    }
+                }) */
             },
             trigger: function () {
                 this.$refs.avatar.click()
             },
             back: function () {
                 this.errors = []
-            }
-        }/* ,
-        sockets: {
-            uploadOrganizationsResult: function (result) {
-                console.log(result)
+            },
+            showLoading () {
+                this.loading = true
+            },
+            hideLoading () {
                 this.loading = false
-                this.errors = result.errors
+            },
+            getProvinceId: function (name) {
+                let id = this.$store.state.provinces.list.find(instance => instance.name === name)
+                if (id !== undefined) {
+                    return id._id
+                }
+                return ''
             }
-        } */
+        }
     }
 </script>
 

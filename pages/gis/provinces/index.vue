@@ -100,8 +100,6 @@
                 })
             },
             getCountryName: function (id) {
-                console.log('the id is : ')
-                console.log(id)
                 return this.$store.state.countries.list.find(element => element._id === id).name
             },
             setProvinces: function () {
